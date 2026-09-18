@@ -2,7 +2,7 @@ local current_file = debug.getinfo(1, "S").source:sub(2)
 local current_dir = current_file:match("(.*/)") or "./"
 dofile(current_dir .. "modules/dialog.lua")
 dofile(current_dir .. "modules/util.lua")
-dofile(current_dir .. "module/string.lua")
+dofile(current_dir .. "modules/string.lua")
 
 -- 最後の選択範囲を保持
 ---@type (Rectangle?)
