@@ -1,4 +1,4 @@
 # lua script
-## `selection_menu_dialog.lua`
-Shows a menu with delete and deselect options when a cell is selected.
+## `Select Menu Dialog`
+選択を使用したら、選択に関するダイアログメニューを表示します。
 ![select menu dialog](./images/select_menu.png)
