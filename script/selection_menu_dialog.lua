@@ -1,13 +1,22 @@
 local isShowDialog = false
--- 最後の選択範囲を保持
-local lastSelectBounds = nil
 
--- 最後の選択範囲と、新しい選択範囲が同じならば true を返す
-local function isSameBounds(last, new)
-    return last == new
+-- 最後の選択範囲を保持
+---@type (Selection | nil)
+local lastSelect = nil
+
+-- Rectangle の形と、座標を比較
+---@param last Selection | nil
+---@param new Selection
+---@return boolean
+local function isSameSelects(last, new)
+    if last == nil then
+        return false
+    end
+    return (last.bounds == new.bounds) and (last.origin == new.origin)
 end
 
 -- ダイアログの設定
+---@return Dialog
 local function selectionMenuDialog()
     local dlg = Dialog {
         title="Selection Menu",
@@ -52,20 +61,19 @@ local timer = Timer{
     ontick = function ()
         local selection = app.sprite.selection
 
+        -- 選択範囲がなくなったら、nil を入れる
         if selection.isEmpty then
-            lastSelectBounds = nil
-            return
+            lastSelect = nil
         end
 
         -- 選択範囲を保持したまま、ダイアログを閉じたときに、ダイアログが再度表示されるのを防ぐ
-        local _isSameBounds = isSameBounds(lastSelectBounds, selection.bounds)
+        local _isSameBounds = isSameSelects(lastSelect, selection)
         -- ダイアログ非表示 && 選択がある && 選択範囲に違いがある
         if (not isShowDialog) and (not selection.isEmpty) and (not _isSameBounds) then
             showDialog()
-            lastSelectBounds = selection.bounds
+            lastSelect = selection
             isShowDialog = true
         end
     end
 }
-
 timer:start()
