@@ -1,0 +1,16 @@
+{
+    "ja": {
+        "delete": "削除",
+        "deselect": "解除",
+        "copy": "コピー",
+        "paste": "ペースト",
+        "invert": "反転"
+    },
+    "en": {
+        "delete": "Delete",
+        "deselect": "Deselect",
+        "copy": "Copy",
+        "paste": "Paste",
+        "invert": "Invert"
+    }
+}
