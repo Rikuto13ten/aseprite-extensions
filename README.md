@@ -1,8 +1,15 @@
+- [Extensions](#extensions)
+  - [`Select Menu Dialog`](#select-menu-dialog)
+- [Install](#install)
+
 ## Extensions
 ### `Select Menu Dialog`
-選択を使用したら、選択に関するダイアログメニューを表示します。<br>
-![select menu dialog](./images/select_menu.png)
+Using the selection tool will display the selection-related dialog menu.<br>
+<image src="./images/select_menu.png" widht="300px">
+
+English ver<br>
+<image src="./images/select_menu_en.png" widht="300px">
 
 ## Install
-以下のリンクから `.aseprite-extension` ファイルをダウンロード<br>
+Download the `.aseprite-extension` file from the link below.<br>
 [Release](https://github.com/Rikuto13ten/aseprite-extensions/releases/latest)
