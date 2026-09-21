@@ -15,7 +15,7 @@ end
 
 -- 呼び出されたファイルのディレクトリを返す
 ---@return string
-function GetCurrentDirectory()
+local function GetCurrentDirectory()
     local current_file = debug.getinfo(1, "S").source:sub(2)
     local current_dir = current_file:match("(.*/)") or "./";
     return current_dir
