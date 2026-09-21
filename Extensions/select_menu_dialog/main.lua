@@ -7,15 +7,15 @@ dofile(current_dir .. "modules/util.lua")
 ---@type (Rectangle?)
 local lastSelect = nil
 
----@type Dialog?
-local dialog = nil
+---@type Dialog
+local dialog = Dialog()
 
 ---@type boolean
 IsShowDialog = false
 
 -- 監視
 local timer = Timer {
-    interval = 0.1,
+    interval = 0.2,
     ontick = function()
         -- sprite を開いていない時は nil なので return
         if app.sprite == nil then return end
@@ -30,7 +30,13 @@ local timer = Timer {
         -- 選択がある && 選択範囲に違いがある
         if (not isSameBounds) and (not IsShowDialog) then
             dialog = SelectionMenuDialog(app.command)
-            dialog:show { wait = false }
+            local point = app.editor.mousePos
+            dialog:show{
+                wait = false,
+                bounds = Rectangle(point, dialog.bounds.size)
+            }
+            dialog:repaint()
+
             lastSelect = newSelect
             IsShowDialog = true
         end

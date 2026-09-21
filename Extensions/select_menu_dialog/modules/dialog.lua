@@ -1,79 +1,114 @@
----@return LangGroup
-local function decodeJson()
-    local current_file = debug.getinfo(1, "S").source:sub(2)
-    local current_dir = current_file:match("(.*/)") or "./"
-    local file = io.open(current_dir .. "../string/lang.json", "r")
-    if not file then return end
-    local jsonText = file:read("*a")
-    file:close()
-    return json.decode(jsonText)
-end
+local current_file = debug.getinfo(1, "S").source:sub(2)
+local current_dir = current_file:match("(.*/)") or "./"
+dofile(current_dir .. "util.lua")
 
+local imageObj = {
+    delete = GetImage("delete.png"),
+    deselect = GetImage("deselect.png"),
+    copy = GetImage("copy.png"),
+    paste = GetImage("paste.png"),
+    invert = GetImage("invert.png"),
 
----@return Lang
-local function localizedText()
-    local languageValue = app.preferences.general.language
-    local data = decodeJson()
-    if languageValue == "ja" then
-        return data.ja
-    else
-        return data.en
-    end
+    deletePress = GetImage("delete_press.png"),
+    deselectPress = GetImage("deselect_press.png"),
+    copyPress = GetImage("copy_press.png"),
+    pastePress = GetImage("paste_press.png"),
+    invert_press = GetImage("invert_press.png")
+}
+
+-- canvas のテンプレート
+---@param dlg Dialog
+---@param onmousedown function
+---@param image Image
+local function customDialogCanvas(dlg, onmousedown, image, pressImage)
+    local srcRect = Rectangle(Point(0, 0), image.bounds.size)
+    local dstw = 15
+    local dsth = math.floor(dstw * (srcRect.h / srcRect.w))
+    -- 表示したいサイズを設定
+    local dstRect = Rectangle(0, 0, dstw, dsth)
+
+    local showImage = image
+
+    dlg:canvas {
+        width = dstw,
+        height = dsth,
+        autoscaling = false,
+        onmousedown = function(ev)
+            showImage = pressImage
+            dlg:repaint()
+        end,
+        onmouseup = function (ev)
+            showImage = image
+            dlg:repaint()
+            onmousedown()
+        end,
+        onpaint = function(ev)
+            ev.context:drawImage(showImage, srcRect, dstRect)
+        end
+    }
 end
 
 -- ダイアログの設定
 ---@param command command
 ---@return Dialog
 function SelectionMenuDialog(command)
-    local data = localizedText()
-
     local dlg = Dialog {
         title = "Selection Menu",
         resizeable = false,
-        onclose = function ()
+        onclose = function()
             IsShowDialog = false
         end
     }
 
-    dlg:button {
-        text = data.delete,
-        onclick = function()
+    customDialogCanvas(
+        dlg,
+        function()
             command.Cut()
             dlg:close()
             IsShowDialog = false
-        end
-    }
+        end,
+        imageObj.delete,
+        imageObj.deletePress
+    )
 
-    dlg:button {
-        text = data.deselect,
-        onclick = function()
+    customDialogCanvas(
+        dlg,
+        function ()
             command.DeselectMask()
             dlg:close()
             command:Refresh()
             IsShowDialog = false
-        end
-    }
+        end,
+        imageObj.deselect,
+        imageObj.deselectPress
+    )
 
-    dlg:button {
-        text = data.copy,
-        onclick = function ()
+    customDialogCanvas(
+        dlg,
+        function ()
             command.Copy()
-        end
-    }
+        end,
+        imageObj.copy,
+        imageObj.copyPress
+    )
 
-    dlg:button {
-        text = data.paste,
-        onclick = function ()
+    customDialogCanvas(
+        dlg,
+        function ()
             command.Paste()
-        end
-    }
+        end,
+        imageObj.paste,
+        imageObj.pastePress
+    )
 
-    dlg:button {
-        text = data.invert,
-        onclick =function ()
+    customDialogCanvas(
+        dlg,
+        function ()
             command.InvertMask()
-        end
-    }
+        end,
+        imageObj.invert,
+        imageObj.invert_press
+    )
 
     return dlg
 end
