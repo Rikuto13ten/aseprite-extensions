@@ -1,6 +1,4 @@
-local current_file = debug.getinfo(1, "S").source:sub(2)
-local current_dir = current_file:match("(.*/)") or "./"
-dofile(current_dir .. "util.lua")
+require("modules/util.lua")
 
 local imageObj = {
     delete = GetImage("delete.png"),
